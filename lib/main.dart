@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'widgets/widgets.dart';
+import 'models/models.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,23 +32,11 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class SwipeItemData {
-  SwipeItemData({required this.name, required this.color});
-
-  String name;
-  Color color;
-}
 
 class _MyHomePageState extends State<MyHomePage> {
   late MatchEngine _matchEngine;
   final _swipeItems = <SwipeItem>[];
-  final _data = [ // SongModel
-    SwipeItemData(name: 'Red', color: Colors.red),
-    SwipeItemData(name: 'Blue', color: Colors.blue),
-    SwipeItemData(name: 'Green', color: Colors.green),
-    SwipeItemData(name: 'Yellow', color: Colors.yellow),
-    SwipeItemData(name: 'Orange', color: Colors.orange),
-  ];
+  final _data = songData;
 
   @override
   void initState() {
@@ -77,17 +66,11 @@ class _MyHomePageState extends State<MyHomePage> {
         matchEngine: _matchEngine,
         itemBuilder: (BuildContext context, int index) {
           // SongCardWidget(SongModel)
-          return Container(
-              alignment: Alignment.center,
-              color: _data[index % _data.length].color,
-              child: Text(
-                _data[(index + 2) % _data.length].name,
-                style: const TextStyle(fontSize: 100),
-              ));
+          return SongCardWidget(songData: _data[index % _data.length]);
         },
         onStackFinished: () => print('Finished entire stack'),
         itemChanged: (SwipeItem item, int index) {
-          print('Changed to ${(item.content as SwipeItemData).name}');
+          print('Changed to ${(item.content as SongModel).name}');
           _swipeItems.add(item);
         },
       )),
