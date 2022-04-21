@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
 import 'package:swipe_cards/swipe_cards.dart';
+import 'widgets/widgets.dart';
 
 void main() {
   runApp(const MyApp());
@@ -40,7 +41,7 @@ class SwipeItemData {
 class _MyHomePageState extends State<MyHomePage> {
   late MatchEngine _matchEngine;
   final _swipeItems = <SwipeItem>[];
-  final _data = [
+  final _data = [ // SongModel
     SwipeItemData(name: 'Red', color: Colors.red),
     SwipeItemData(name: 'Blue', color: Colors.blue),
     SwipeItemData(name: 'Green', color: Colors.green),
@@ -75,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: SwipeCards(
         matchEngine: _matchEngine,
         itemBuilder: (BuildContext context, int index) {
+          // SongCardWidget(SongModel)
           return Container(
               alignment: Alignment.center,
               color: _data[index % _data.length].color,
