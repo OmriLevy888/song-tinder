@@ -46,8 +46,8 @@ class _SongCardWidgetState extends State<SongCardWidget> {
     return Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
                 colors: gradientColors)),
         alignment: Alignment.center,
         padding: const EdgeInsets.all(10),

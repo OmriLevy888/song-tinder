@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
         title: 'Song Tinder',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          shadowColor: Colors.black.withAlpha(60),
         ),
         home: DefaultTabController(
             length: 2,
