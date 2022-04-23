@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Song Tinder',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        shadowColor: Colors.black.withAlpha(60),
       ),
       home: const MyHomePage(title: 'Song Tinder'),
     );
@@ -32,20 +33,20 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-
 class _MyHomePageState extends State<MyHomePage> {
   late MatchEngine _matchEngine;
   final _swipeItems = <SwipeItem>[];
   final _data = songData;
+  int _index = 0;
 
   @override
   void initState() {
-    print('in initState');
     for (int i = 0; i < _data.length; i++) {
       _swipeItems.add(SwipeItem(
         content: _data[i],
-        likeAction: () => print('Liked ${_data[i].name}'),
-        nopeAction: () => print('Noped ${_data[i].name}'),
+        likeAction: () => _onSwipeRight(),
+        nopeAction: () => _onSwipeLeft(),
+        superlikeAction: () => _onSwipeUp(),
         onSlideUpdate: (SlideRegion? region) async {},
       ));
     }
@@ -54,26 +55,87 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
+  void _onSwipeRight() {
+    final song = _data[_index % _data.length];
+    print('Swiped right on ${song.name} by ${song.artist}');
+  }
+
+  void _onSwipeLeft() {
+    final song = _data[_index % _data.length];
+    print('Swiped left on ${song.name} by ${song.artist}');
+  }
+
+  void _onSwipeUp() {
+    final song = _data[_index % _data.length];
+    print('Swiped up on ${song.name} by ${song.artist}');
+  }
+
   @override
   Widget build(BuildContext context) {
-    print('in build');
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-          child: SwipeCards(
-        matchEngine: _matchEngine,
-        itemBuilder: (BuildContext context, int index) {
-          // SongCardWidget(SongModel)
-          return SongCardWidget(songData: _data[index % _data.length]);
-        },
-        onStackFinished: () => print('Finished entire stack'),
-        itemChanged: (SwipeItem item, int index) {
-          print('Changed to ${(item.content as SongModel).name}');
-          _swipeItems.add(item);
-        },
-      )),
+      body: Stack(alignment: Alignment.bottomCenter, children: [
+        SwipeCards(
+          matchEngine: _matchEngine,
+          upSwipeAllowed: true,
+          itemBuilder: (BuildContext context, int index) {
+            _index = index;
+            return SongCardWidget(songData: _data[index % _data.length]);
+          },
+          onStackFinished: () => print('Finished entire stack'),
+          itemChanged: (SwipeItem item, int index) {
+            print('1 Changed to ${_data[index % _data.length].name}');
+            _swipeItems.add(
+              SwipeItem(
+                content: _data[index % _data.length],
+                likeAction: () => _onSwipeRight(),
+                nopeAction: () => _onSwipeLeft(),
+                superlikeAction: () => _onSwipeUp(),
+                onSlideUpdate: (SlideRegion? region) async => {},
+              ),
+            );
+          },
+        ),
+        Container(
+          padding: const EdgeInsets.only(left: 60.0, right: 60.0, bottom: 40.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CircleButton(
+                radius: 30,
+                color: const Color.fromARGB(255, 221, 0, 0),
+                icon: Icons.close,
+                onPressed: () {
+                  _matchEngine.currentItem?.nope();
+                  _onSwipeLeft();
+                },
+              ),
+              CircleButton(
+                radius: 25,
+                color: const Color.fromARGB(255, 0, 181, 226),
+                icon: Icons.menu,
+                onPressed: () {
+                  _matchEngine.currentItem?.superLike();
+                  _onSwipeUp();
+                },
+                onLongPress: () => print('Configure swipe up'),
+              ),
+              CircleButton(
+                radius: 30,
+                color: const Color.fromARGB(255, 1, 202, 62),
+                icon: Icons.favorite,
+                onPressed: () {
+                  _matchEngine.currentItem?.like();
+                  _onSwipeRight();
+                },
+                onLongPress: () => print('Configure swipe right'),
+              ),
+            ],
+          ),
+        ),
+      ]),
     );
   }
 }
