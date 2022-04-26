@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:song_tinder/home_page/home_page_widget.dart';
 import 'package:song_tinder/conf_page/conf_page_widget.dart';
+import 'package:song_tinder/settings_page/settings_page_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,12 +22,17 @@ class MyApp extends StatelessWidget {
             length: 2,
             child: Scaffold(
                 appBar: AppBar(
-                    bottom: const TabBar(
-                  tabs: [
-                    Tab(icon: Icon(Icons.home)),
-                    Tab(icon: Icon(Icons.settings))
-                  ],
-                )),
+                  title: const Text('Song Tinder'),
+                  actions: const <Widget>[SettingsButton()],
+                ),
+                bottomNavigationBar: const BottomAppBar(
+                    color: Colors.blue,
+                    child: TabBar(
+                      tabs: [
+                        Tab(icon: Icon(Icons.home)),
+                        Tab(icon: Icon(Icons.settings_applications))
+                      ],
+                    )),
                 body: const TabBarView(
                   physics: NeverScrollableScrollPhysics(),
                   children: [
