@@ -25,7 +25,6 @@ class HomePageSwipeButtons extends StatelessWidget {
             color: const Color.fromARGB(255, 221, 0, 0),
             icon: Icons.close,
             onPressed: nopeButtonAction,
-            onLongPress: () => print('Configure swipe left'),
           ),
           CircleButton(
             radius: 25,

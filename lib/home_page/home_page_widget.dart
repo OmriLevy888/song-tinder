@@ -11,14 +11,7 @@ class HomePageWidget extends StatefulWidget {
 }
 
 class _HomePageWidgetState extends State<HomePageWidget> {
-  late HomePageSwipeCards _swipeCards;
-
-  @override
-  void initState() {
-    _swipeCards = HomePageSwipeCards();
-
-    super.initState();
-  }
+  final HomePageSwipeCards _swipeCards = HomePageSwipeCards();
 
   @override
   Widget build(BuildContext context) {
