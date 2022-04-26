@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:song_tinder/home_page/song_provider.dart';
 import 'package:song_tinder/widgets/widgets.dart';
 
 class HomePageWidget extends StatefulWidget {
-  const HomePageWidget({Key? key, required this.title}) : super(key: key);
+  HomePageWidget({Key? key, required this.songProvider}) : super(key: key);
 
-  final String title;
+  late SongProvider songProvider;
 
   @override
   State<HomePageWidget> createState() => _HomePageWidgetState();
@@ -15,7 +16,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
   @override
   void initState() {
-    _swipeCards = HomePageSwipeCards();
+    _swipeCards = HomePageSwipeCards(songProvider: widget.songProvider);
 
     super.initState();
   }

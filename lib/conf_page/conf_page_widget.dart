@@ -1,54 +1,91 @@
 import 'package:flutter/material.dart';
+import 'package:song_tinder/home_page/song_provider.dart';
+import 'package:song_tinder/models/models.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class ConfPageWidget extends StatefulWidget {
-  const ConfPageWidget({Key? key}) : super(key: key);
+  ConfPageWidget({Key? key, required this.songProvider}) : super(key: key);
+
+  late SongProvider songProvider;
 
   @override
   State<ConfPageWidget> createState() => _ConfPageWidgetState();
 }
 
 class _ConfPageWidgetState extends State<ConfPageWidget> {
-  final List<String> sourceFromPlaylist = [ 
-    'Random',
-    'Recommended',
-    'Playlist #1',
-    'Playlist #2'
-  ];
-  final List<String> sendToPlaylist = ['Playlist #1', 'Playlist #2'];
-  final List<String> manualSendToPlaylists = ['Playlist #1', 'Playlist #2'];
+  late List<PlaylistModel> _availablePlaylists;
+  late List<PlaylistModel> _additionalSourceOptions;
+
+  late PlaylistModel _sourcePlaylist;
+  late PlaylistModel _destPlaylist;
+  late List<PlaylistModel>
+      _manualActionPlaylists; // needs to be a List<Playlist> and needs to change the input to select multiple playlists
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    _availablePlaylists = widget.songProvider.listPlaylists();
+
+    List<SongModel> randomSongs = <SongModel>[];
+    for (var i = 0; i < 8; i++) {
+      randomSongs.add(widget.songProvider.poll());
+    }
+    _additionalSourceOptions = [
+      PlaylistModel(name: 'Random', songs: randomSongs),
+      PlaylistModel(name: 'Recommended', songs: randomSongs)
+    ];
+
+    super.initState();
+  }
 
   Widget _buildSourceFromField() {
     return DropdownButtonFormField(
       decoration: const InputDecoration(labelText: 'Source Tracks From:'),
-      items: sourceFromPlaylist.map((String value) {
-        return DropdownMenuItem(value: value, child: Text(value));
+      items: (_additionalSourceOptions + _availablePlaylists)
+          .map((PlaylistModel value) {
+        return DropdownMenuItem(value: value, child: Text(value.name));
       }).toList(),
-      onChanged: (newValue) =>
-          print('Source Playlist was changed to $newValue'),
+      validator: (value) {
+        if (value == null) {
+          return 'This field is required';
+        }
+        return null;
+      },
+      onChanged: (newValue) {
+        _sourcePlaylist = newValue as PlaylistModel;},
     );
   }
 
   Widget _buildSendToField() {
     return DropdownButtonFormField(
       decoration: const InputDecoration(labelText: 'Send Liked Tracks To:'),
-      items: sendToPlaylist.map((String value) {
-        return DropdownMenuItem(value: value, child: Text(value));
+      items: _availablePlaylists.map((PlaylistModel value) {
+        return DropdownMenuItem(value: value, child: Text(value.name));
       }).toList(),
-      onChanged: (newValue) =>
-          print('Destination Playlist was changed to $newValue'),
+      validator: (value) {
+        if (value == null) {
+          return 'This field is required';
+        }
+        return null;
+      },
+      onChanged: (newValue) => _destPlaylist = newValue as PlaylistModel,
     );
   }
 
   Widget _buildManualSendField() {
-    return DropdownButtonFormField(
-      decoration:
-          const InputDecoration(labelText: 'Set Tracks For Manual Action:'),
-      items: manualSendToPlaylists.map((String value) {
-        return DropdownMenuItem(value: value, child: Text(value));
+    return MultiSelectDialogField(
+      items: _availablePlaylists.map((PlaylistModel value) {
+        return MultiSelectItem(value, value.name);
       }).toList(),
-      onChanged: (newValue) => print('Manual Action was changed to $newValue'),
+      validator: (value) {
+        if (value == null) {
+          return 'This field is required';
+        }
+        return null;
+      },
+      onConfirm: (newValues) =>
+          _manualActionPlaylists = newValues as List<PlaylistModel>,
     );
   }
 
@@ -72,8 +109,15 @@ class _ConfPageWidgetState extends State<ConfPageWidget> {
                       child: _buildManualSendField()),
                   ElevatedButton(
                       child: const Text('Save', style: TextStyle(fontSize: 15)),
-                      onPressed: () =>
-                          print('Save configurations button was pressed')),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          widget.songProvider.config.source = _sourcePlaylist;
+                          widget.songProvider.config.destination = _destPlaylist;
+                          widget.songProvider.config.manualDestinations = _manualActionPlaylists;
+                          _formKey.currentState?.save();
+                          print('Configurations were saved to SongProvider successfully');
+                        }
+                      }),
                 ])));
   }
 }

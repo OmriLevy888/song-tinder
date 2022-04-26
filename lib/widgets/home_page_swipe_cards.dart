@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:song_tinder/home_page/dummy_music_service.dart';
 import 'package:song_tinder/home_page/song_provider.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'package:swipe_cards/draggable_card.dart';
@@ -9,9 +8,10 @@ import 'package:song_tinder/models/models.dart';
 import 'package:song_tinder/widgets/widgets.dart';
 
 class HomePageSwipeCards extends StatefulWidget {
-  HomePageSwipeCards({Key? key}) : super(key: key);
+  HomePageSwipeCards({Key? key, required this.songProvider}) : super(key: key);
 
   late MatchEngine matchEngine;
+  late SongProvider songProvider;
 
   @override
   State<HomePageSwipeCards> createState() => _HomePageSwipeCardsState();
@@ -20,17 +20,12 @@ class HomePageSwipeCards extends StatefulWidget {
 class _HomePageSwipeCardsState extends State<HomePageSwipeCards> {
   final List<SwipeItem> _swipeItems = <SwipeItem>[];
   final Queue<SongModel> _songQueue = Queue();
-  // The SongProviderConfig should be updated from the value in the config page
-  final _songProvider = SongProvider(
-    config: SongProviderConfig(source: 'TODO'),
-    musicService: DummyMusicService(),
-  );
 
   @override
   void initState() {
     // Fetch a few songs so we preload the SongModel in the back of the current one
     for (int i = 0; i < 8; i++) {
-      _addSongToStack(_songProvider.poll());
+      _addSongToStack(widget.songProvider.poll());
     }
     widget.matchEngine = MatchEngine(swipeItems: _swipeItems);
     super.initState();
@@ -76,7 +71,7 @@ class _HomePageSwipeCardsState extends State<HomePageSwipeCards> {
       onStackFinished: () => print('Finished entire stack'),
       itemChanged: (SwipeItem item, int index) {
         _songQueue.removeFirst();
-        _addSongToStack(_songProvider.poll());
+        _addSongToStack(widget.songProvider.poll());
       },
     );
   }

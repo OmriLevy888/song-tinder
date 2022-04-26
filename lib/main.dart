@@ -2,13 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:song_tinder/home_page/home_page_widget.dart';
 import 'package:song_tinder/conf_page/conf_page_widget.dart';
 import 'package:song_tinder/settings_page/settings_page_widget.dart';
+import 'package:song_tinder/home_page/song_provider.dart';
+import 'package:song_tinder/home_page/dummy_music_service.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
+  
+  // The SongProviderConfig should be updated from the value in the config page
+  final _songProvider = SongProvider(
+    config: SongProviderConfig(),
+    musicService: DummyMusicService(),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +42,11 @@ class MyApp extends StatelessWidget {
                         Tab(icon: Icon(Icons.settings_applications))
                       ],
                     )),
-                body: const TabBarView(
+                body: TabBarView(
                   physics: NeverScrollableScrollPhysics(),
                   children: [
-                    HomePageWidget(title: "Song Tinder"),
-                    ConfPageWidget()
+                    HomePageWidget(songProvider: _songProvider),
+                    ConfPageWidget(songProvider: _songProvider)
                   ],
                 ))));
   }
