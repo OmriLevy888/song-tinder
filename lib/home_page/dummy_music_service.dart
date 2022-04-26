@@ -5,7 +5,7 @@ import 'package:song_tinder/models/models.dart';
 
 class DummyMusicService extends MusicServiceInterface {
   final _random = Random(DateTime.now().microsecond);
-  final _dummyData = const [
+  final _dummySongData = const [
     SongModel(
         name: 'Spaceship',
         album: 'The College Dropout',
@@ -43,6 +43,23 @@ class DummyMusicService extends MusicServiceInterface {
             'https://m.media-amazon.com/images/I/71pxGj4RoVS._AC_SL1200_.jpg'),
   ];
 
+  final List<PlaylistModel> _dummyPlaylistData = [
+    const PlaylistModel(name: 'In My Room', songs: [SongModel(
+        name: 'In My Room',
+        album: 'In My Room',
+        artist: 'Frank Ocean',
+        releaseYear: 2019,
+        coverImgUrl:
+            'https://images.squarespace-cdn.com/content/597febe6725e2529bad5fc50/1572710251369-UWUQIK1E0MRQG2TZO9TG/?format=1500w&content-type=image%2Fjpeg')]),
+    const PlaylistModel(name: 'Graduation', songs: [SongModel(
+        name: 'Homecoming',
+        album: 'Graduation',
+        artist: 'Kanye West',
+        releaseYear: 2007,
+        coverImgUrl:
+            'https://m.media-amazon.com/images/I/71pxGj4RoVS._AC_SL1200_.jpg')])
+  ];
+
   @override
   ArtistModel fetchArtist(String name) {
     return const ArtistModel(name: 'TODO', albums: []);
@@ -55,7 +72,7 @@ class DummyMusicService extends MusicServiceInterface {
 
   @override
   SongModel fetchSong(String name) {
-    return _dummyData.where((element) => element.name == name).first;
+    return _dummySongData.where((element) => element.name == name).first;
   }
 
   @override
@@ -63,8 +80,12 @@ class DummyMusicService extends MusicServiceInterface {
     return const PlaylistModel(name: 'TODO', songs: []);
   }
 
+  List<PlaylistModel> listPlaylists() {
+    return _dummyPlaylistData;
+  }
+
   @override
   SongModel fetchRandom() {
-    return _dummyData[_random.nextInt(_dummyData.length * 100) % _dummyData.length];
+    return _dummySongData[_random.nextInt(_dummySongData.length * 100) % _dummySongData.length];
   }
 }

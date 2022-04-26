@@ -2,9 +2,11 @@ import 'package:song_tinder/home_page/music_service_interface.dart';
 import 'package:song_tinder/models/models.dart';
 
 class SongProviderConfig {
-  SongProviderConfig({required this.source});
+  SongProviderConfig({this.source, this.destination, this.manualDestinations});
 
-  String source;
+  PlaylistModel? source;
+  PlaylistModel? destination;
+  List<PlaylistModel>? manualDestinations;
 }
 
 class SongProvider {
@@ -15,5 +17,9 @@ class SongProvider {
 
   SongModel poll() {
     return musicService.fetchRandom();
+  }
+
+  List<PlaylistModel> listPlaylists() {
+    return musicService.listPlaylists();
   }
 }
