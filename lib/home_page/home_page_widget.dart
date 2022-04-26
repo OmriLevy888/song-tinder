@@ -17,7 +17,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   @override
   void initState() {
     _swipeCards = HomePageSwipeCards(songProvider: widget.songProvider);
-
+    
     super.initState();
   }
 
