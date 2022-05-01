@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-
-enum ProviderOption { spotify, appleMusic }
+import 'package:song_tinder/home_page/song_provider.dart';
 
 class SettingsPageWidget extends StatefulWidget {
-  const SettingsPageWidget({Key? key}) : super(key: key);
+  SettingsPageWidget({Key? key, required this.songProvider}) : super(key: key);
+
+  final SongProvider songProvider;
 
   @override
   State<SettingsPageWidget> createState() => _SettingsPageWidgetState();
@@ -13,41 +14,62 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   List<Widget> _extendedProviderForm = <Widget>[];
 
+  MusicServices _service = MusicServices.spotify;
+
+  final _spotifyIDController = TextEditingController();
+  final _spotifyClientSectetController = TextEditingController();
+  final _appleMusicKeyIdentifierController = TextEditingController();
+  final _appleMusicISSController = TextEditingController();
+
   List<Widget> _buildSpotifyForm() {
     return [
       TextFormField(
+        controller: _spotifyIDController,
         decoration:
             const InputDecoration(labelText: 'Enter Your Client ID Here:'),
       ),
       TextFormField(
+          controller: _spotifyClientSectetController,
           decoration: const InputDecoration(
-              labelText: 'Endter Your Client Secret Here:')),
+              labelText: 'Enter Your Client Secret Here:')),
       ElevatedButton(
-          onPressed: _submitSpotifySettings, child: const Text('Save'))
+          onPressed: _submitMusicServiceSettings, child: const Text('Save'))
     ];
   }
 
   List<Widget> _buildAppleMusicForm() {
     return [
       TextFormField(
+        controller: _appleMusicKeyIdentifierController,
         decoration:
             const InputDecoration(labelText: 'Enter Your Key Identifier Here:'),
       ),
       TextFormField(
+          controller: _appleMusicISSController,
           decoration: const InputDecoration(
-              labelText:
-                  'Endter Your Issuer (iss) Registered Claim Key Here:')),
+              labelText: 'Enter Your Issuer (iss) Registered Claim Key Here:')),
       ElevatedButton(
-          onPressed: _submitAppleMusicSettings, child: const Text('Save'))
+          onPressed: _submitMusicServiceSettings, child: const Text('Save'))
     ];
   }
 
-  void _submitSpotifySettings() {
-    // TODO
-  }
-
-  void _submitAppleMusicSettings() {
-    // TODO
+  void _submitMusicServiceSettings() {
+    switch (_service) {
+      case MusicServices.spotify:
+        widget.songProvider.setMusicServiceConfig(MusicServiceConfig(
+          service: _service,
+          spotifyID: _spotifyIDController.text,
+          spotifyClientSecret: _spotifyClientSectetController.text,
+        ));
+        break;
+      case MusicServices.appleMusic:
+        widget.songProvider.setMusicServiceConfig(MusicServiceConfig(
+          service: _service,
+          appleMusicKeyIdentifier: _appleMusicKeyIdentifierController.text,
+          appleMusicISS: _appleMusicISSController.text,
+        ));
+        break;
+    }
   }
 
   @override
@@ -63,26 +85,29 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                   children: [
                     DropdownButtonFormField(
                         decoration: const InputDecoration(
-                            labelText:
-                                'Choose Your Music Streaming Service:'),
+                            labelText: 'Choose Your Music Streaming Service:'),
                         items: const [
                           DropdownMenuItem(
-                              value: ProviderOption.spotify,
+                              value: MusicServices.spotify,
                               child: Text('Spotify')),
                           DropdownMenuItem(
-                              value: ProviderOption.appleMusic,
+                              value: MusicServices.appleMusic,
                               child: Text('AppleMusic'))
                         ],
                         onChanged: (newValue) {
                           print('$newValue was chosen as the music provider');
                           switch (newValue) {
-                            case ProviderOption.spotify:
-                              setState(() =>
-                                  _extendedProviderForm = _buildSpotifyForm());
+                            case MusicServices.spotify:
+                              setState(() {
+                                _service = MusicServices.spotify;
+                                _extendedProviderForm = _buildSpotifyForm();
+                              });
                               break;
-                            case ProviderOption.appleMusic:
-                              setState(() => _extendedProviderForm =
-                                  _buildAppleMusicForm());
+                            case MusicServices.appleMusic:
+                              setState(() {
+                                _service = MusicServices.appleMusic;
+                                _extendedProviderForm = _buildAppleMusicForm();
+                              });
                               break;
                           }
                         }),
@@ -95,7 +120,9 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
 }
 
 class SettingsButton extends StatelessWidget {
-  const SettingsButton({Key? key}) : super(key: key);
+  SettingsButton({Key? key, required this.songProvider}) : super(key: key);
+
+  final SongProvider songProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +131,7 @@ class SettingsButton extends StatelessWidget {
         onPressed: () => Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const SettingsPageWidget())));
+                builder: (context) =>
+                    SettingsPageWidget(songProvider: songProvider))));
   }
 }
