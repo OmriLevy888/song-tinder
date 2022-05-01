@@ -111,9 +111,9 @@ class _ConfPageWidgetState extends State<ConfPageWidget> {
                       child: const Text('Save', style: TextStyle(fontSize: 15)),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          widget.songProvider.config.source = _sourcePlaylist;
-                          widget.songProvider.config.destination = _destPlaylist;
-                          widget.songProvider.config.manualDestinations = _manualActionPlaylists;
+                          widget.songProvider.songProviderConfig.source = _sourcePlaylist;
+                          widget.songProvider.songProviderConfig.destination = _destPlaylist;
+                          widget.songProvider.songProviderConfig.manualDestinations = _manualActionPlaylists;
                           _formKey.currentState?.save();
                           print('Configurations were saved to SongProvider successfully');
                         }

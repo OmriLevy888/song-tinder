@@ -12,10 +12,11 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-  
+
   // The SongProviderConfig should be updated from the value in the config page
   final _songProvider = SongProvider(
-    config: SongProviderConfig(),
+    musicServiceConfig: const MusicServiceConfig(service: MusicServices.spotify),
+    songProviderConfig: SongProviderConfig(),
     musicService: DummyMusicService(),
   );
 
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
             child: Scaffold(
                 appBar: AppBar(
                   title: const Text('Song Tinder'),
-                  actions: const <Widget>[SettingsButton()],
+                  actions: <Widget>[SettingsButton(songProvider: _songProvider)],
                 ),
                 bottomNavigationBar: const BottomAppBar(
                     color: Colors.blue,
