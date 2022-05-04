@@ -8,10 +8,9 @@ import 'package:song_tinder/models/models.dart';
 import 'package:song_tinder/widgets/widgets.dart';
 
 class HomePageSwipeCards extends StatefulWidget {
-  HomePageSwipeCards({Key? key, required this.songProvider}) : super(key: key);
+  HomePageSwipeCards({Key? key}) : super(key: key);
 
   late MatchEngine matchEngine;
-  late SongProvider songProvider;
 
   @override
   State<HomePageSwipeCards> createState() => _HomePageSwipeCardsState();
@@ -25,7 +24,7 @@ class _HomePageSwipeCardsState extends State<HomePageSwipeCards> {
   void initState() {
     // Fetch a few songs so we preload the SongModel in the back of the current one
     for (int i = 0; i < 8; i++) {
-      _addSongToStack(widget.songProvider.poll());
+      _addSongToStack(SongProvider().poll());
     }
     widget.matchEngine = MatchEngine(swipeItems: _swipeItems);
     super.initState();
@@ -71,7 +70,7 @@ class _HomePageSwipeCardsState extends State<HomePageSwipeCards> {
       onStackFinished: () => print('Finished entire stack'),
       itemChanged: (SwipeItem item, int index) {
         _songQueue.removeFirst();
-        _addSongToStack(widget.songProvider.poll());
+        _addSongToStack(SongProvider().poll());
       },
     );
   }

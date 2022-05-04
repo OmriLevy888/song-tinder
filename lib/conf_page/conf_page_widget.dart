@@ -4,9 +4,7 @@ import 'package:song_tinder/models/models.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class ConfPageWidget extends StatefulWidget {
-  ConfPageWidget({Key? key, required this.songProvider}) : super(key: key);
-
-  late SongProvider songProvider;
+  ConfPageWidget({Key? key}) : super(key: key);
 
   @override
   State<ConfPageWidget> createState() => _ConfPageWidgetState();
@@ -25,11 +23,11 @@ class _ConfPageWidgetState extends State<ConfPageWidget> {
 
   @override
   void initState() {
-    _availablePlaylists = widget.songProvider.listPlaylists();
+    _availablePlaylists = SongProvider().listPlaylists();
 
     List<SongModel> randomSongs = <SongModel>[];
     for (var i = 0; i < 8; i++) {
-      randomSongs.add(widget.songProvider.poll());
+      randomSongs.add(SongProvider().poll());
     }
     _additionalSourceOptions = [
       PlaylistModel(name: 'Random', songs: randomSongs),
@@ -111,9 +109,9 @@ class _ConfPageWidgetState extends State<ConfPageWidget> {
                       child: const Text('Save', style: TextStyle(fontSize: 15)),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          widget.songProvider.songProviderConfig.source = _sourcePlaylist;
-                          widget.songProvider.songProviderConfig.destination = _destPlaylist;
-                          widget.songProvider.songProviderConfig.manualDestinations = _manualActionPlaylists;
+                          SongProvider().songProviderConfig.source = _sourcePlaylist;
+                          SongProvider().songProviderConfig.destination = _destPlaylist;
+                          SongProvider().songProviderConfig.manualDestinations = _manualActionPlaylists;
                           _formKey.currentState?.save();
                           print('Configurations were saved to SongProvider successfully');
                         }

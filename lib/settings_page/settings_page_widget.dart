@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:song_tinder/home_page/song_provider.dart';
 
 class SettingsPageWidget extends StatefulWidget {
-  SettingsPageWidget({Key? key, required this.songProvider}) : super(key: key);
-
-  final SongProvider songProvider;
+  SettingsPageWidget({Key? key}) : super(key: key);
 
   @override
   State<SettingsPageWidget> createState() => _SettingsPageWidgetState();
@@ -56,14 +54,14 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
   void _submitMusicServiceSettings() {
     switch (_service) {
       case MusicServices.spotify:
-        widget.songProvider.setMusicServiceConfig(MusicServiceConfig(
+        SongProvider().setMusicServiceConfig(MusicServiceConfig(
           service: _service,
           spotifyID: _spotifyIDController.text,
           spotifyClientSecret: _spotifyClientSectetController.text,
         ));
         break;
       case MusicServices.appleMusic:
-        widget.songProvider.setMusicServiceConfig(MusicServiceConfig(
+        SongProvider().setMusicServiceConfig(MusicServiceConfig(
           service: _service,
           appleMusicKeyIdentifier: _appleMusicKeyIdentifierController.text,
           appleMusicISS: _appleMusicISSController.text,
@@ -120,9 +118,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
 }
 
 class SettingsButton extends StatelessWidget {
-  SettingsButton({Key? key, required this.songProvider}) : super(key: key);
-
-  final SongProvider songProvider;
+  SettingsButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -132,6 +128,6 @@ class SettingsButton extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    SettingsPageWidget(songProvider: songProvider))));
+                    SettingsPageWidget())));
   }
 }

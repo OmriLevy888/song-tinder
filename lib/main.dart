@@ -12,14 +12,6 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-
-  // The SongProviderConfig should be updated from the value in the config page
-  final _songProvider = SongProvider(
-    musicServiceConfig: const MusicServiceConfig(service: MusicServices.spotify),
-    songProviderConfig: SongProviderConfig(),
-    musicService: DummyMusicService(),
-  );
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,7 +25,7 @@ class MyApp extends StatelessWidget {
             child: Scaffold(
                 appBar: AppBar(
                   title: const Text('Song Tinder'),
-                  actions: <Widget>[SettingsButton(songProvider: _songProvider)],
+                  actions: <Widget>[SettingsButton()],
                 ),
                 bottomNavigationBar: const BottomAppBar(
                     color: Colors.blue,
@@ -46,8 +38,8 @@ class MyApp extends StatelessWidget {
                 body: TabBarView(
                   physics: NeverScrollableScrollPhysics(),
                   children: [
-                    HomePageWidget(songProvider: _songProvider),
-                    ConfPageWidget(songProvider: _songProvider)
+                    HomePageWidget(),
+                    ConfPageWidget()
                   ],
                 ))));
   }
