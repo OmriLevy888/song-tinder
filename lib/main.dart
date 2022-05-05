@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:song_tinder/home_page/home_page_widget.dart';
 import 'package:song_tinder/conf_page/conf_page_widget.dart';
 import 'package:song_tinder/settings_page/settings_page_widget.dart';
-import 'package:song_tinder/home_page/song_provider.dart';
-import 'package:song_tinder/home_page/dummy_music_service.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +34,7 @@ class MyApp extends StatelessWidget {
                       ],
                     )),
                 body: TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   children: [
                     HomePageWidget(),
                     ConfPageWidget()
