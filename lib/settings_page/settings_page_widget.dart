@@ -118,7 +118,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
 }
 
 class SettingsButton extends StatelessWidget {
-  SettingsButton({Key? key}) : super(key: key);
+  const SettingsButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
