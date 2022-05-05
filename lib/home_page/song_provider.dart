@@ -36,12 +36,10 @@ class SongProvider {
 
   SongProvider._internal();
 
-  MusicServiceConfig musicServiceConfig = const MusicServiceConfig(service: MusicServices.none);
   SongProviderConfig songProviderConfig = SongProviderConfig();
   MusicServiceInterface musicService = DummyMusicService();
 
   void setMusicServiceConfig(MusicServiceConfig config) {
-    musicServiceConfig = config;
     musicService = MusicServiceFactory.from(config);
   }
 
