@@ -26,7 +26,7 @@ class CircleButton extends StatelessWidget {
         width: radius * 2,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.primary,
           boxShadow: [
             BoxShadow(
               color: Theme.of(context).shadowColor,
@@ -41,7 +41,7 @@ class CircleButton extends StatelessWidget {
           child: Icon(
             icon,
             color: color,
-            size: (iconSize == null) ? radius * 1.1 : iconSize,
+            size: iconSize?? radius * 1.1,
           ),
           onLongPress: onLongPress,
         ));
