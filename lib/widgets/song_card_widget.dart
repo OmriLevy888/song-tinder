@@ -58,10 +58,10 @@ class _SongCardWidgetState extends State<SongCardWidget> {
                   fit: BoxFit.cover)),
           SongAttributeContainer(
               childItem: Text(widget.songData.name,
-                  style: const TextStyle(fontSize: 15, color: Colors.white))),
+                  style: Theme.of(context).textTheme.displayMedium)),
           SongAttributeContainer(
               childItem: Text(widget.songData.artist,
-                  style: const TextStyle(fontSize: 10, color: Colors.white))),
+                  style: Theme.of(context).textTheme.displaySmall)),
         ]));
   }
 
