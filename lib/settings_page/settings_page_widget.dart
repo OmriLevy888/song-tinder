@@ -23,15 +23,6 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
 
   List<Widget> _buildSpotifyForm() {
     return [
-      TextFormField(
-        controller: _spotifyIDController,
-        decoration:
-            const InputDecoration(labelText: 'Enter Your Client ID Here:'),
-      ),
-      TextFormField(
-          controller: _spotifyClientSectetController,
-          decoration: const InputDecoration(
-              labelText: 'Enter Your Client Secret Here:')),
       ElevatedButton(
           onPressed: _submitMusicServiceSettings, child: const Text('Save'))
     ];
@@ -58,8 +49,6 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
       case MusicServices.spotify:
         widget.songProvider.setMusicServiceConfig(MusicServiceConfig(
           service: _service,
-          spotifyID: _spotifyIDController.text,
-          spotifyClientSecret: _spotifyClientSectetController.text,
         ));
         break;
       case MusicServices.appleMusic:

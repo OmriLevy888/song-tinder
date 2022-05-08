@@ -25,7 +25,7 @@ class _HomePageSwipeCardsState extends State<HomePageSwipeCards> {
   void initState() {
     // Fetch a few songs so we preload the SongModel in the back of the current one
     for (int i = 0; i < 8; i++) {
-      _addSongToStack(widget.songProvider.poll());
+      widget.songProvider.poll().then((song) => _addSongToStack(song));
     }
     widget.matchEngine = MatchEngine(swipeItems: _swipeItems);
     super.initState();
@@ -60,19 +60,36 @@ class _HomePageSwipeCardsState extends State<HomePageSwipeCards> {
     print('Swiped up on ${song.name} by ${song.artist}');
   }
 
+
+  // To be depricated when we introduce caching on SongProvider and polling will become synchronous.
+  Future<int> emptyStackDelay() {
+    return Future.delayed(const Duration(seconds: 1), () { return 0; });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SwipeCards(
-      matchEngine: widget.matchEngine,
-      upSwipeAllowed: true,
-      itemBuilder: (BuildContext context, int index) {
-        return SongCardWidget(songData: _songQueue.first);
-      },
-      onStackFinished: () => print('Finished entire stack'),
-      itemChanged: (SwipeItem item, int index) {
-        _songQueue.removeFirst();
-        _addSongToStack(widget.songProvider.poll());
-      },
-    );
+    return FutureBuilder(
+        future: emptyStackDelay(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              return SwipeCards(
+                matchEngine: widget.matchEngine,
+                upSwipeAllowed: true,
+                itemBuilder: (BuildContext context, int index) {
+                  return SongCardWidget(songData: _songQueue.first);
+                },
+                onStackFinished: () => print('Finished entire stack'),
+                itemChanged: (SwipeItem item, int index) {
+                  _songQueue.removeFirst();
+                  widget.songProvider
+                      .poll()
+                      .then((song) => _addSongToStack(song));
+                },
+              );
+            default:
+              return const Center(child: CircularProgressIndicator());
+          }
+        });
   }
 }

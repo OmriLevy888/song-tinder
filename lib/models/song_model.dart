@@ -10,6 +10,6 @@ class SongModel {
   final String name;
   final String album;
   final String artist;
-  final int releaseYear;
+  final String releaseYear;
   final String coverImgUrl;
 }

@@ -37,6 +37,8 @@ dependencies:
   swipe_cards: ^1.0.0
   palette_generator: ^0.3.3
   multi_select_flutter: ^4.1.2
+  google_fonts: ^2.3.2
+  url_launcher: ^6.1.0
 
 dev_dependencies:
   flutter_test:
