@@ -63,7 +63,6 @@ class Spotify extends MusicServiceInterface {
                   base64.encode(utf8.encode(_clientId + ':' + _clientSecret))
             }).then((response) {
           accessToken = json.decode(response.body)['access_token'];
-          print(accessToken);
         });
         request.response.close();
         listener.close();

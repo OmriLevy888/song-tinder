@@ -1,8 +1,9 @@
+import 'package:song_tinder/home_page/dummy_music_service.dart';
 import 'package:song_tinder/home_page/music_service_interface.dart';
 import 'package:song_tinder/models/models.dart';
 import 'music_service_factory.dart';
 
-enum MusicServices { appleMusic, spotify }
+enum MusicServices { none, appleMusic, spotify }
 
 class MusicServiceConfig {
   const MusicServiceConfig({
@@ -25,17 +26,16 @@ class SongProviderConfig {
 }
 
 class SongProvider {
-  SongProvider(
-      {required this.musicServiceConfig,
-      required this.songProviderConfig,
-      required this.musicService});
+  static final SongProvider _instance = SongProvider._internal();
 
-  MusicServiceConfig musicServiceConfig;
-  SongProviderConfig songProviderConfig;
-  MusicServiceInterface musicService;
+  factory SongProvider() { return _instance; }
+
+  SongProvider._internal();
+
+  SongProviderConfig songProviderConfig = SongProviderConfig();
+  MusicServiceInterface musicService = DummyMusicService();
 
   void setMusicServiceConfig(MusicServiceConfig config) {
-    musicServiceConfig = config;
     musicService = MusicServiceFactory.from(config);
   }
 

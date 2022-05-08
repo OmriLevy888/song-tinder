@@ -4,9 +4,7 @@ import 'package:song_tinder/models/models.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class ConfPageWidget extends StatefulWidget {
-  ConfPageWidget({Key? key, required this.songProvider}) : super(key: key);
-
-  late SongProvider songProvider;
+  ConfPageWidget({Key? key}) : super(key: key);
 
   @override
   State<ConfPageWidget> createState() => _ConfPageWidgetState();
@@ -24,7 +22,7 @@ class _ConfPageWidgetState extends State<ConfPageWidget> {
 
   @override
   void initState() {
-    _availablePlaylists = widget.songProvider.listPlaylists();
+    _availablePlaylists = SongProvider().listPlaylists();
 
     super.initState();
   }
@@ -86,7 +84,6 @@ class _ConfPageWidgetState extends State<ConfPageWidget> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              print(widget.songProvider.musicService);
               if (snapshot.data == null) {
                 return const Center(child: CircularProgressIndicator());
               }
@@ -117,11 +114,11 @@ class _ConfPageWidgetState extends State<ConfPageWidget> {
                                     style: TextStyle(fontSize: 15)),
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
-                                    widget.songProvider.songProviderConfig
+                                    SongProvider().songProviderConfig
                                         .source = _sourcePlaylist;
-                                    widget.songProvider.songProviderConfig
+                                    SongProvider().songProviderConfig
                                         .destination = _destPlaylist;
-                                    widget.songProvider.songProviderConfig
+                                    SongProvider().songProviderConfig
                                             .manualDestinations =
                                         _manualActionPlaylists;
                                     _formKey.currentState?.save();

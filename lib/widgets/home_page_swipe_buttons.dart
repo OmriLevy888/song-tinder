@@ -16,7 +16,7 @@ class HomePageSwipeButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 60.0, right: 60.0, bottom: 40.0),
+      padding: const EdgeInsets.only(left: 60.0, right: 60.0, bottom: 20.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
