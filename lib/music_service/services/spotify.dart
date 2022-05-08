@@ -18,8 +18,8 @@ class Spotify extends MusicServiceInterface {
   final client = http.Client();
 
   late String accessToken;
-  static String _clientId = "073d65f0b5004d89a8f9b0332c9382ca"; // Your Spotify app clientId;
-  static String _clientSecret = "57b67c9d0142414cb1d7b273ac514afc"; // Your Spotify app clientSecret;
+  static String _clientId = ""; // Your Spotify app clientId;
+  static String _clientSecret = ""; // Your Spotify app clientSecret;
 
   static String _callbackServerURL = "http://localhost:3000";
   final Uri _initAuthURL = Uri(
