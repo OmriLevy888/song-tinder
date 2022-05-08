@@ -80,7 +80,11 @@ class _HomePageSwipeCardsState extends State<HomePageSwipeCards> {
                 },
                 onStackFinished: () => print('Finished entire stack'),
                 itemChanged: (SwipeItem item, int index) {
+                  SongProvider().audioPlayer.stop();
                   _songQueue.removeFirst();
+                  if (_songQueue.first.soundPreviewURL != null) {
+                    SongProvider().audioPlayer.play(_songQueue.first.soundPreviewURL!);
+                  }
                   SongProvider()
                       .poll()
                       .then((song) => _addSongToStack(song));

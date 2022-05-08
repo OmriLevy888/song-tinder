@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:song_tinder/home_page/dummy_music_service.dart';
 import 'package:song_tinder/home_page/music_service_interface.dart';
 import 'package:song_tinder/models/models.dart';
@@ -34,6 +35,7 @@ class SongProvider {
 
   SongProviderConfig songProviderConfig = SongProviderConfig();
   MusicServiceInterface musicService = DummyMusicService();
+  AudioPlayer audioPlayer = AudioPlayer();
 
   void setMusicServiceConfig(MusicServiceConfig config) {
     musicService = MusicServiceFactory.from(config);

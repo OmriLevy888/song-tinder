@@ -12,16 +12,15 @@ import 'package:url_launcher/url_launcher.dart';
 
 class Spotify extends MusicServiceInterface {
   Spotify() {
-    initAuth();
+    _initAuth();
   }
 
   final client = http.Client();
 
   late String accessToken;
-  static String _clientId = ""; // Your Spotify app clientId;
-  static String _clientSecret = ""; // Your Spotify app clientSecret;
+  static String _clientId = "073d65f0b5004d89a8f9b0332c9382ca"; // Your Spotify app clientId;
+  static String _clientSecret = "57b67c9d0142414cb1d7b273ac514afc"; // Your Spotify app clientSecret;
 
-  static String _baseURL = "https://api.spotify.com/v1";
   static String _callbackServerURL = "http://localhost:3000";
   final Uri _initAuthURL = Uri(
       scheme: 'https',
@@ -35,7 +34,29 @@ class Spotify extends MusicServiceInterface {
             'ugc-image-upload user-modify-playback-state user-read-playback-state user-read-currently-playing user-follow-modify user-follow-read user-read-recently-played user-read-playback-position user-top-read playlist-read-collaborative playlist-modify-public playlist-read-private playlist-modify-private app-remote-control streaming user-read-email user-read-private user-library-modify user-library-read'
       });
 
-  void initAuth() async {
+  
+  Future<http.Response> _sendRequest(String path, Map<String, String>? queryParameters, bool isPost) async {
+    http.Response response;
+    if (isPost) {
+      var uri = Uri.https('api.spotify.com', '/v1$path');
+      response = await client.post(uri, headers: {'Authorization': 'Bearer ' + accessToken}, body: queryParameters);
+    }
+    else {
+      var uri = Uri.https('api.spotify.com', "/v1$path", queryParameters);
+      print(uri.toString());
+      response = await client.get(uri, headers: {'Authorization': 'Bearer ' + accessToken});
+    }
+    if (response.statusCode == 401) {
+      _renewAuth();
+      return _sendRequest(path, queryParameters, isPost);
+    }
+    if (response.statusCode == 200) {
+      return response;
+    }
+    throw HttpException("Unexpected response status: ${response.statusCode}");
+  }
+
+  void _initAuth() async {
     await launchUrl(
         _initAuthURL); // open Spotify's authorization form on a web view
 
@@ -70,7 +91,7 @@ class Spotify extends MusicServiceInterface {
     });
   }
 
-  void renewAuth() {
+  void _renewAuth() {
     client.post(
         Uri(
             scheme: 'https',
@@ -87,6 +108,17 @@ class Spotify extends MusicServiceInterface {
         }).then((response) {
       accessToken = json.decode(response.body)['access_token'];
     });
+  }
+
+  SongModel _songModelFromTrackObject(Map<String, dynamic> trackObject) {
+    return SongModel(
+      name: trackObject['name'],
+      album: trackObject['album']['name'],
+      artist: trackObject['artists'][0]['name'],
+      releaseYear: trackObject['album']['release_date'],
+      coverImgUrl: trackObject['album']['images'][0]['url'],
+      soundPreviewURL: trackObject['preview_url'],
+      );
   }
 
   @override
@@ -109,38 +141,19 @@ class Spotify extends MusicServiceInterface {
 
   @override
   Future<SongModel> fetchRandom() async {
-    String path = "/me/top/tracks";
+    String path = "/search";
+    String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    String randomItem = (characters.split('')..shuffle()).first;
+    final random = Random(DateTime.now().microsecond);
+    int randomInt = random.nextInt(1000);
 
-    final _random = Random(DateTime.now().microsecond);
-    List<SongModel> savedTracks = <SongModel>[];
+    Map<String, String> query = {'q': randomItem, 'type': 'track', 'offset': randomInt.toString(), 'limit': '1', 'include_external': 'audio'};
 
-    var response = await client.get(Uri.parse(_baseURL + path),
-        headers: {'Authorization': 'Bearer ' + accessToken});
-    if (response.statusCode == 401) {
-      renewAuth();
-      fetchRandom();
-    } else if (response.statusCode == 200) {
-      var retrievedSongs = (json.decode(response.body))['items'];
+    var response = await _sendRequest(path, query, false);
 
-      for (int songIter = 0; songIter < retrievedSongs.length; songIter++) {
-        String songName = retrievedSongs[songIter]['name'];
-        String songAlbum = retrievedSongs[songIter]['album']['name'];
-        String songArtist = retrievedSongs[songIter]['artists'][0]['name'];
-        String songReleaseYear =
-            retrievedSongs[songIter]['album']['release_date'];
-        String songCoverImgUrl =
-            retrievedSongs[songIter]['album']['images'][0]['url'];
+    var parsedSong = (json.decode(response.body))['tracks']['items'][0];
 
-        savedTracks.add(SongModel(
-            name: songName,
-            album: songAlbum,
-            artist: songArtist,
-            releaseYear: songReleaseYear,
-            coverImgUrl: songCoverImgUrl));
-      }
-    }
-    return savedTracks[
-        _random.nextInt(savedTracks.length * 100) % savedTracks.length];
+    return _songModelFromTrackObject(parsedSong);
   }
 
   @override
@@ -155,47 +168,26 @@ class Spotify extends MusicServiceInterface {
 
     List<PlaylistModel> result = <PlaylistModel>[];
 
-    var response = await client.get(Uri.parse(_baseURL + path),
-        headers: {'Authorization': 'Bearer ' + accessToken});
-    if (response.statusCode == 401) {
-      renewAuth();
-      listPlaylists();
-    } else if (response.statusCode == 200) {
-      var retrievedPlaylists = (json.decode(response.body))['items'];
-      for (int playlistIter = 0;
-          playlistIter < retrievedPlaylists.length;
-          playlistIter++) {
-        String playlistName = retrievedPlaylists[playlistIter]['name'];
-        List<SongModel> parsedSongs = <SongModel>[];
+    var response = await _sendRequest(path, null, false);
+    var retrievedPlaylists = (json.decode(response.body))['items'];
+    for (int playlistIter = 0;
+        playlistIter < retrievedPlaylists.length;
+        playlistIter++) {
+      String playlistName = retrievedPlaylists[playlistIter]['name'];
+      List<SongModel> parsedSongs = <SongModel>[];
 
-        String playlistTracksLink =
-            retrievedPlaylists[playlistIter]['tracks']['href'];
+      String playlistTracksLink =
+          retrievedPlaylists[playlistIter]['tracks']['href'];
 
-        var playlistResponse = await client.get(Uri.parse(playlistTracksLink),
-            headers: {'Authorization': 'Bearer ' + accessToken});
+      var playlistResponse = await _sendRequest(Uri.parse(playlistTracksLink).path.substring(3), null, false);
 
-        final retrievedSongs = (json.decode(playlistResponse.body))['items'];
+      final retrievedSongs = (json.decode(playlistResponse.body))['items'];
 
-        for (int songIter = 0; songIter < retrievedSongs.length; songIter++) {
-          String songName = retrievedSongs[songIter]['track']['name'];
-          String songAlbum = retrievedSongs[songIter]['track']['album']['name'];
-          String songArtist =
-              retrievedSongs[songIter]['track']['artists'][0]['name'];
-          String songReleaseYear =
-              retrievedSongs[songIter]['track']['album']['release_date']!;
-          String songCoverImgUrl =
-              retrievedSongs[songIter]['track']['album']['images'][0]['url'];
-
-          parsedSongs.add(SongModel(
-              name: songName,
-              album: songAlbum,
-              artist: songArtist,
-              releaseYear: songReleaseYear,
-              coverImgUrl: songCoverImgUrl));
-        }
-
-        result.add(PlaylistModel(name: playlistName, songs: parsedSongs));
+      for (int songIter = 0; songIter < retrievedSongs.length; songIter++) {
+        parsedSongs.add(_songModelFromTrackObject(retrievedSongs[songIter]['track']));
       }
+
+      result.add(PlaylistModel(name: playlistName, songs: parsedSongs));
     }
     return result;
   }
