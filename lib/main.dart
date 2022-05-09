@@ -47,7 +47,8 @@ class _SongTinderAppState extends State<SongTinderApp> {
               background: Colors.green,
               onBackground: Colors.white,
               surface: Colors.black,
-              onSurface: Colors.white),
+              onSurface: Colors.white,
+              shadow: Color.fromARGB(128, 0, 0, 0)),
           textTheme: TextTheme(
             headlineLarge: GoogleFonts.roboto(
               fontSize: 35,
@@ -82,7 +83,8 @@ class _SongTinderAppState extends State<SongTinderApp> {
               background: Colors.green,
               onBackground: Colors.white,
               surface: Colors.black,
-              onSurface: Colors.white),
+              onSurface: Colors.white,
+              shadow: Color.fromARGB(128, 0, 0, 0)),
           textTheme: TextTheme(
             headlineLarge: GoogleFonts.roboto(
               fontSize: 35,
@@ -144,7 +146,7 @@ class AppBody extends StatelessWidget {
                 )),
             body: TabBarView(
               physics: const NeverScrollableScrollPhysics(),
-              children: [HomePageWidget(), ConfPageWidget()],
+              children: [const HomePageWidget(), ConfPageWidget()],
             )));
   }
 }
