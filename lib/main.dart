@@ -146,7 +146,7 @@ class AppBody extends StatelessWidget {
                 )),
             body: TabBarView(
               physics: const NeverScrollableScrollPhysics(),
-              children: [HomePageWidget(), ConfPageWidget()],
+              children: [const HomePageWidget(), ConfPageWidget()],
             )));
   }
 }
