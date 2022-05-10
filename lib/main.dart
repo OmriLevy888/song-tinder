@@ -40,14 +40,15 @@ class _SongTinderAppState extends State<SongTinderApp> {
               brightness: Brightness.light,
               primary: Color.fromARGB(255, 255, 255, 255),
               onPrimary: Color.fromARGB(255, 36, 36, 36),
-              secondary: Colors.red,
-              onSecondary: Colors.yellow,
+              secondary: Color.fromARGB(255, 241, 9, 9),
+              onSecondary: Color.fromARGB(255, 255, 255, 255),
               error: Colors.red,
               onError: Colors.white,
               background: Colors.green,
               onBackground: Colors.white,
               surface: Colors.black,
-              onSurface: Colors.white),
+              onSurface: Colors.white,
+              shadow: Color.fromARGB(128, 0, 0, 0)),
           textTheme: TextTheme(
             headlineLarge: GoogleFonts.roboto(
               fontSize: 35,
@@ -75,14 +76,15 @@ class _SongTinderAppState extends State<SongTinderApp> {
               brightness: Brightness.dark,
               primary: Color.fromARGB(255, 36, 36, 36),
               onPrimary: Color.fromARGB(255, 255, 255, 255),
-              secondary: Colors.red,
-              onSecondary: Colors.yellow,
+              secondary: Color.fromARGB(255, 255, 255, 255),
+              onSecondary: Color.fromARGB(255, 241, 9, 9),
               error: Colors.red,
               onError: Colors.white,
               background: Colors.green,
               onBackground: Colors.white,
               surface: Colors.black,
-              onSurface: Colors.white),
+              onSurface: Colors.white,
+              shadow: Color.fromARGB(128, 0, 0, 0)),
           textTheme: TextTheme(
             headlineLarge: GoogleFonts.roboto(
               fontSize: 35,
@@ -117,10 +119,21 @@ class AppBody extends StatelessWidget {
         length: 2,
         child: Scaffold(
             appBar: AppBar(
-              title: Text(
-                'Song Tinder',
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
+              title: Stack(alignment: Alignment.center, children: [
+                Icon(
+                  Icons.favorite,
+                  size: MediaQuery.of(context).size.width / 6,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                Transform.rotate(
+                  angle: 0.1,
+                  child: Icon(
+                    Icons.music_note_sharp,
+                    size: MediaQuery.of(context).size.width / 12,
+                    color: Theme.of(context).colorScheme.onSecondary,
+                  ),
+                ),
+              ]),
               actions: const <Widget>[ThemeButton(), SettingsButton()],
               backgroundColor: Theme.of(context).colorScheme.primary,
             ),
@@ -144,7 +157,7 @@ class AppBody extends StatelessWidget {
                 )),
             body: TabBarView(
               physics: const NeverScrollableScrollPhysics(),
-              children: [HomePageWidget(), ConfPageWidget()],
+              children: [const HomePageWidget(), ConfPageWidget()],
             )));
   }
 }
