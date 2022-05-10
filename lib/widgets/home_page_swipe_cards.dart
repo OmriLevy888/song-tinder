@@ -1,11 +1,12 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:song_tinder/home_page/song_provider.dart';
+import 'package:song_tinder/providers/song_provider.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'package:swipe_cards/draggable_card.dart';
 import 'package:song_tinder/models/models.dart';
 import 'package:song_tinder/widgets/widgets.dart';
+import 'package:song_tinder/providers/audio_provider.dart';
 
 class HomePageSwipeCards extends StatefulWidget {
   HomePageSwipeCards({Key? key}) : super(key: key);
@@ -80,10 +81,10 @@ class _HomePageSwipeCardsState extends State<HomePageSwipeCards> {
                 },
                 onStackFinished: () => print('Finished entire stack'),
                 itemChanged: (SwipeItem item, int index) {
-                  SongProvider().audioPlayer.stop();
+                  AudioProvider().audioPlayer.stop();
                   _songQueue.removeFirst();
                   if (_songQueue.first.soundPreviewURL != null) {
-                    SongProvider().audioPlayer.play(_songQueue.first.soundPreviewURL!);
+                    AudioProvider().audioPlayer.play(_songQueue.first.soundPreviewURL!);
                   }
                   SongProvider()
                       .poll()

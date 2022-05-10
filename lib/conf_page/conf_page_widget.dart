@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:song_tinder/home_page/song_provider.dart';
+import 'package:song_tinder/providers/song_provider.dart';
 import 'package:song_tinder/models/models.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 

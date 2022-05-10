@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:song_tinder/home_page/song_provider.dart';
+import 'package:song_tinder/providers/song_provider.dart';
 import 'package:song_tinder/widgets/widgets.dart';
 
 class HomePageWidget extends StatefulWidget {

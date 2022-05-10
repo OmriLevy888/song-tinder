@@ -1,6 +1,6 @@
-import 'package:song_tinder/home_page/dummy_music_service.dart';
-import 'package:song_tinder/home_page/music_service_interface.dart';
-import 'package:song_tinder/home_page/song_provider.dart';
+import 'package:song_tinder/music_service/services/dummy_music_service.dart';
+import 'package:song_tinder/music_service/music_service_interface.dart';
+import 'package:song_tinder/providers/song_provider.dart';
 import 'package:song_tinder/music_service/services/spotify.dart';
 
 class MusicServiceFactory {

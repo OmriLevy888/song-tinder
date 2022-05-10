@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:song_tinder/home_page/music_service_interface.dart';
+import 'package:song_tinder/music_service/music_service_interface.dart';
 import 'package:song_tinder/models/models.dart';
 
 class DummyMusicService extends MusicServiceInterface {

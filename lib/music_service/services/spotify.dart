@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:http/http.dart' as http;
-import 'package:song_tinder/home_page/music_service_interface.dart';
+import 'package:song_tinder/music_service/music_service_interface.dart';
 import 'package:song_tinder/models/song_model.dart';
 import 'package:song_tinder/models/playlist_model.dart';
 import 'package:song_tinder/models/artist_model.dart';
@@ -18,8 +18,8 @@ class Spotify extends MusicServiceInterface {
   final client = http.Client();
 
   late String accessToken;
-  static String _clientId = ""; // Your Spotify app clientId;
-  static String _clientSecret = ""; // Your Spotify app clientSecret;
+  static String _clientId = "073d65f0b5004d89a8f9b0332c9382ca"; // Your Spotify app clientId;
+  static String _clientSecret = "88fe1df33f404291a03286fa2da3bae6"; // Your Spotify app clientSecret;
 
   static String _callbackServerURL = "http://localhost:3000";
   final Uri _initAuthURL = Uri(
@@ -152,6 +152,13 @@ class Spotify extends MusicServiceInterface {
     var response = await _sendRequest(path, query, false);
 
     var parsedSong = (json.decode(response.body))['tracks']['items'][0];
+    
+    // the preview is often not found when retrieving a track from the /search endpoint while getting the track from the /tracks endpoint has it
+    if (parsedSong['preview_url'] == null) {
+      String trackLink = parsedSong['href'];
+      var refetchFromTrackLink = await _sendRequest(Uri.parse(trackLink).path.substring(3), null, false);
+      parsedSong = json.decode(refetchFromTrackLink.body);
+    }
 
     return _songModelFromTrackObject(parsedSong);
   }

@@ -1,8 +1,7 @@
-import 'package:audioplayers/audioplayers.dart';
-import 'package:song_tinder/home_page/dummy_music_service.dart';
-import 'package:song_tinder/home_page/music_service_interface.dart';
+import 'package:song_tinder/music_service/services/dummy_music_service.dart';
+import 'package:song_tinder/music_service/music_service_interface.dart';
 import 'package:song_tinder/models/models.dart';
-import 'music_service_factory.dart';
+import 'package:song_tinder/music_service/music_service_factory.dart';
 
 enum MusicServices { none, appleMusic, spotify }
 
@@ -35,7 +34,6 @@ class SongProvider {
 
   SongProviderConfig songProviderConfig = SongProviderConfig();
   MusicServiceInterface musicService = DummyMusicService();
-  AudioPlayer audioPlayer = AudioPlayer();
 
   void setMusicServiceConfig(MusicServiceConfig config) {
     musicService = MusicServiceFactory.from(config);
