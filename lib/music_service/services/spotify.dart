@@ -34,34 +34,44 @@ class Spotify extends MusicServiceInterface {
             'ugc-image-upload user-modify-playback-state user-read-playback-state user-read-currently-playing user-follow-modify user-follow-read user-read-recently-played user-read-playback-position user-top-read playlist-read-collaborative playlist-modify-public playlist-read-private playlist-modify-private app-remote-control streaming user-read-email user-read-private user-library-modify user-library-read'
       });
 
-  
-  Future<http.Response> _sendRequest(String path, Map<String, String>? queryParameters, bool isPost) async {
+  bool _isErrorResponse(int statusCode) {
+    if (statusCode == 401 || statusCode == 200) {
+      return false;
+    }
+    return true;
+  }
+
+  Future<http.Response> _sendRequest(
+      String path, Map<String, String>? queryParameters, bool isPost) async {
     http.Response response;
     if (isPost) {
       var uri = Uri.https('api.spotify.com', '/v1$path');
-      response = await client.post(uri, headers: {'Authorization': 'Bearer ' + accessToken}, body: queryParameters);
-    }
-    else {
+      response = await client.post(uri,
+          headers: {'Authorization': 'Bearer ' + accessToken},
+          body: queryParameters);
+    } else {
       var uri = Uri.https('api.spotify.com', "/v1$path", queryParameters);
       print(uri.toString());
-      response = await client.get(uri, headers: {'Authorization': 'Bearer ' + accessToken});
+      response = await client
+          .get(uri, headers: {'Authorization': 'Bearer ' + accessToken});
     }
-    if (response.statusCode == 401) {
+    if (_isErrorResponse(response.statusCode)) {
+      throw HttpException("Unexpected response status: ${response.statusCode}");
+    } else if (response.statusCode == 401) {
       _renewAuth();
       return _sendRequest(path, queryParameters, isPost);
     }
-    if (response.statusCode == 200) {
-      return response;
-    }
-    throw HttpException("Unexpected response status: ${response.statusCode}");
+    return response;
   }
 
   void _initAuth() async {
     await launchUrl(
         _initAuthURL); // open Spotify's authorization form on a web view
 
+    const int callbackListenerPort = 3000;
+
     // start listener for callback response
-    await HttpServer.bind('0.0.0.0', 3000).then((listener) {
+    await HttpServer.bind('0.0.0.0', callbackListenerPort).then((listener) {
       listener.listen((HttpRequest request) async {
         await closeInAppWebView(); // close the web view on received callback response
 
@@ -118,7 +128,7 @@ class Spotify extends MusicServiceInterface {
       releaseYear: trackObject['album']['release_date'],
       coverImgUrl: trackObject['album']['images'][0]['url'],
       soundPreviewURL: trackObject['preview_url'],
-      );
+    );
   }
 
   @override
@@ -142,21 +152,29 @@ class Spotify extends MusicServiceInterface {
   @override
   Future<SongModel> fetchRandom() async {
     String path = "/search";
-    String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    String characters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     String randomItem = (characters.split('')..shuffle()).first;
     final random = Random(DateTime.now().microsecond);
     int randomInt = random.nextInt(1000);
 
-    Map<String, String> query = {'q': randomItem, 'type': 'track', 'offset': randomInt.toString(), 'limit': '1', 'include_external': 'audio'};
+    Map<String, String> query = {
+      'q': randomItem,
+      'type': 'track',
+      'offset': randomInt.toString(),
+      'limit': '1',
+      'include_external': 'audio'
+    };
 
     var response = await _sendRequest(path, query, false);
 
     var parsedSong = (json.decode(response.body))['tracks']['items'][0];
-    
+
     // the preview is often not found when retrieving a track from the /search endpoint while getting the track from the /tracks endpoint has it
     if (parsedSong['preview_url'] == null) {
       String trackLink = parsedSong['href'];
-      var refetchFromTrackLink = await _sendRequest(Uri.parse(trackLink).path.substring(3), null, false);
+      var refetchFromTrackLink = await _sendRequest(
+          Uri.parse(trackLink).path.substring(3), null, false);
       parsedSong = json.decode(refetchFromTrackLink.body);
     }
 
@@ -186,12 +204,14 @@ class Spotify extends MusicServiceInterface {
       String playlistTracksLink =
           retrievedPlaylists[playlistIter]['tracks']['href'];
 
-      var playlistResponse = await _sendRequest(Uri.parse(playlistTracksLink).path.substring(3), null, false);
+      var playlistResponse = await _sendRequest(
+          Uri.parse(playlistTracksLink).path.substring(3), null, false);
 
       final retrievedSongs = (json.decode(playlistResponse.body))['items'];
 
       for (int songIter = 0; songIter < retrievedSongs.length; songIter++) {
-        parsedSongs.add(_songModelFromTrackObject(retrievedSongs[songIter]['track']));
+        parsedSongs
+            .add(_songModelFromTrackObject(retrievedSongs[songIter]['track']));
       }
 
       result.add(PlaylistModel(name: playlistName, songs: parsedSongs));
