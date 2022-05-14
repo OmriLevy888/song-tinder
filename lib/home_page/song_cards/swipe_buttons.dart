@@ -37,8 +37,6 @@ class SwipeButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        "dragState: (${dragState.left()}, ${dragState.up()}, ${dragState.right()})");
     return Container(
       padding: EdgeInsets.only(
           left: MediaQuery.of(context).size.width / 5,
@@ -97,7 +95,6 @@ class DragState {
   void onDragUpdate(DragUpdateDetails drag) {
     _horizontal += drag.delta.dx;
     _vertical += drag.delta.dy;
-    debugPrint("left: ${left()}, up: ${up()}, right: ${right()}");
   }
 
   double _retWrapper(double value) {
