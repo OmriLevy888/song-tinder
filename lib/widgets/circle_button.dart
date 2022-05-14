@@ -6,6 +6,7 @@ class CircleButton extends StatelessWidget {
       required this.onPressed,
       this.onLongPress,
       required this.radius,
+      this.backgroundColor,
       required this.color,
       required this.icon,
       this.iconSize})
@@ -15,6 +16,7 @@ class CircleButton extends StatelessWidget {
   final void Function()? onLongPress;
 
   final double radius;
+  final Color? backgroundColor;
   final Color color;
   final IconData icon;
   final double? iconSize;
@@ -26,7 +28,7 @@ class CircleButton extends StatelessWidget {
         width: radius * 2,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Theme.of(context).colorScheme.primary,
+          color: backgroundColor ?? Theme.of(context).colorScheme.primary,
           boxShadow: [
             BoxShadow(
               color: Theme.of(context).shadowColor,

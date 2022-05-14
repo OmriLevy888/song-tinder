@@ -75,7 +75,7 @@ class _SongTinderAppState extends State<SongTinderApp> {
           colorScheme: const ColorScheme(
               brightness: Brightness.dark,
               primary: Color.fromARGB(255, 36, 36, 36),
-              onPrimary: Color.fromARGB(255, 255, 255, 255),
+              onPrimary: Color.fromARGB(255, 179, 179, 179),
               secondary: Color.fromARGB(255, 255, 255, 255),
               onSecondary: Color.fromARGB(255, 241, 9, 9),
               error: Colors.red,

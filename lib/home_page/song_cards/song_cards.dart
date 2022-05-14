@@ -14,6 +14,7 @@ class _SongSwipeCardsState extends State<SongSwipeCards> {
   late SongCardFactoryResult _head;
   late SongCardFactoryResult _back;
   late bool _enabled;
+  DragState _dragState = DragState();
 
   @override
   void initState() {
@@ -80,9 +81,19 @@ class _SongSwipeCardsState extends State<SongSwipeCards> {
         child: _head.card,
         feedback: _head.card,
         childWhenDragging: _back.card,
+        onDragStarted: () => setState(() {
+          _dragState = DragState();
+        }),
         onDragEnd: _onDragEnd,
+        onDragUpdate: (DragUpdateDetails drag) => setState(() {
+          _dragState.onDragUpdate(drag);
+        }),
+        onDraggableCanceled: (Velocity velocity, Offset offset) => setState(() {
+          _dragState = DragState();
+        }),
       ),
       SwipeButtons(
+        dragState: _dragState,
         swipeRightButtonAction: _enabled
             ? () {
                 _onSwipeRight();
