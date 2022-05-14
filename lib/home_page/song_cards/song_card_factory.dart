@@ -2,8 +2,8 @@ import 'dart:collection';
 
 import 'package:palette_generator/palette_generator.dart';
 
-import '../../models/song_model.dart';
-import '../song_provider.dart';
+import 'package:song_tinder/models/song_model.dart';
+import 'package:song_tinder/providers/song_provider.dart';
 import 'song_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -14,7 +14,8 @@ class CardPrefetchedData {
   final String artist;
   final String name;
   final String album;
-  final int releaseYear;
+  final String releaseYear;
+  final String? soundPreviewURL;
 
   const CardPrefetchedData({
     required this.coverImage,
@@ -23,6 +24,7 @@ class CardPrefetchedData {
     required this.name,
     required this.album,
     required this.releaseYear,
+    this.soundPreviewURL
   });
 }
 
@@ -82,7 +84,8 @@ class SongCardFactory {
     });
   }
 
-  Future<CardPrefetchedData> _fetchCardData(SongModel song) async {
+  Future<CardPrefetchedData> _fetchCardData(Future<SongModel> songPromise) async {
+    final SongModel song = await songPromise;
     final coverImage = Image.network(song.coverImgUrl);
     final paletteGenerator =
         await PaletteGenerator.fromImageProvider(coverImage.image);
@@ -94,6 +97,7 @@ class SongCardFactory {
       name: song.name,
       album: song.album,
       releaseYear: song.releaseYear,
+      soundPreviewURL: song.soundPreviewURL
     );
   }
 
