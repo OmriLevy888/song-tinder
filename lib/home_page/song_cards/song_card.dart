@@ -9,6 +9,7 @@ class SongCard extends StatelessWidget {
         song = data.name,
         coverImage = data.coverImage,
         paletteGenerator = data.paletteGenerator,
+        soundPreviewURL = data.soundPreviewURL,
         super(key: key);
 
   final String artist;
@@ -16,6 +17,7 @@ class SongCard extends StatelessWidget {
   final String song;
   final Image coverImage;
   final PaletteGenerator paletteGenerator;
+  final String? soundPreviewURL;
 
   @override
   Widget build(BuildContext context) {

@@ -5,11 +5,13 @@ class SongModel {
     required this.artist,
     required this.releaseYear,
     required this.coverImgUrl,
+    this.soundPreviewURL,
   });
 
   final String name;
   final String album;
   final String artist;
-  final int releaseYear;
+  final String releaseYear;
   final String coverImgUrl;
+  final String? soundPreviewURL;
 }

@@ -5,6 +5,6 @@ abstract class MusicServiceInterface {
   AlbumModel fetchAlbum(String name);
   SongModel fetchSong(String name);
   PlaylistModel fetchPlaylist(String name);
-  List<PlaylistModel> listPlaylists();
-  SongModel fetchRandom();
+  Future<List<PlaylistModel>> listPlaylists();
+  Future<SongModel> fetchRandom();
 }

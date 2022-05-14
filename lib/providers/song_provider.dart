@@ -1,22 +1,18 @@
-import 'package:song_tinder/home_page/dummy_music_service.dart';
-import 'package:song_tinder/home_page/music_service_interface.dart';
+import 'package:song_tinder/music_service/services/dummy_music_service.dart';
+import 'package:song_tinder/music_service/music_service_interface.dart';
 import 'package:song_tinder/models/models.dart';
-import 'music_service_factory.dart';
+import 'package:song_tinder/music_service/music_service_factory.dart';
 
 enum MusicServices { none, appleMusic, spotify }
 
 class MusicServiceConfig {
   const MusicServiceConfig({
     required this.service,
-    this.spotifyID,
-    this.spotifyClientSecret,
     this.appleMusicKeyIdentifier,
     this.appleMusicISS,
   });
 
   final MusicServices service;
-  final String? spotifyID;
-  final String? spotifyClientSecret;
   final String? appleMusicKeyIdentifier;
   final String? appleMusicISS;
 }
@@ -43,11 +39,11 @@ class SongProvider {
     musicService = MusicServiceFactory.from(config);
   }
 
-  SongModel poll() {
+  Future<SongModel> poll() {
     return musicService.fetchRandom();
   }
 
-  List<PlaylistModel> listPlaylists() {
+  Future<List<PlaylistModel>> listPlaylists() {
     return musicService.listPlaylists();
   }
 }

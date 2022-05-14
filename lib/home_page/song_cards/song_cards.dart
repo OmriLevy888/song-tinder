@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:song_tinder/home_page/song_cards/song_card_factory.dart';
+import 'package:song_tinder/providers/audio_provider.dart';
 import 'swipe_buttons.dart';
 import 'song_card.dart';
 
@@ -26,6 +27,7 @@ class _SongSwipeCardsState extends State<SongSwipeCards> {
   }
 
   void _onCardLoaded(SongCard card) {
+    AudioProvider().audioPlayer.stop();
     debugPrint("Loaded ${card.song}");
     if (_head.type == SongCardType.loading) {
       setState(() {
@@ -36,6 +38,9 @@ class _SongSwipeCardsState extends State<SongSwipeCards> {
       setState(() {
         _back = SongCardFactoryResult(type: SongCardType.card, card: card);
       });
+    }
+    if ((_head.card as SongCard).soundPreviewURL != null) {
+      AudioProvider().audioPlayer.play((_head.card as SongCard).soundPreviewURL!);
     }
   }
 
