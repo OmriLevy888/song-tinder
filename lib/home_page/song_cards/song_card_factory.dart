@@ -17,15 +17,14 @@ class CardPrefetchedData {
   final String releaseYear;
   final String? soundPreviewURL;
 
-  const CardPrefetchedData({
-    required this.coverImage,
-    required this.paletteGenerator,
-    required this.artist,
-    required this.name,
-    required this.album,
-    required this.releaseYear,
-    this.soundPreviewURL
-  });
+  const CardPrefetchedData(
+      {required this.coverImage,
+      required this.paletteGenerator,
+      required this.artist,
+      required this.name,
+      required this.album,
+      required this.releaseYear,
+      this.soundPreviewURL});
 }
 
 enum SongCardType { loading, card }
@@ -52,7 +51,9 @@ class LoadingCard extends StatelessWidget {
               itemCount: MediaQuery.of(context).size.width ~/ 30,
               size: MediaQuery.of(context).size.width / 4,
             ),
-            SizedBox(height: MediaQuery.of(context).size.height / 20,),
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 20,
+            ),
             Text(
               'Fetching songs',
               style: Theme.of(context).textTheme.displaySmall!,
@@ -84,21 +85,22 @@ class SongCardFactory {
     });
   }
 
-  Future<CardPrefetchedData> _fetchCardData(Future<SongModel> songPromise) async {
+  Future<CardPrefetchedData> _fetchCardData(
+      Future<SongModel> songPromise) async {
     final SongModel song = await songPromise;
     final coverImage = Image.network(song.coverImgUrl);
-    final paletteGenerator =
-        await PaletteGenerator.fromImageProvider(coverImage.image);
+    final paletteGenerator = await PaletteGenerator.fromImageProvider(
+        coverImage.image,
+        timeout: Duration.zero);
 
     return CardPrefetchedData(
-      coverImage: coverImage,
-      paletteGenerator: paletteGenerator,
-      artist: song.artist,
-      name: song.name,
-      album: song.album,
-      releaseYear: song.releaseYear,
-      soundPreviewURL: song.soundPreviewURL
-    );
+        coverImage: coverImage,
+        paletteGenerator: paletteGenerator,
+        artist: song.artist,
+        name: song.name,
+        album: song.album,
+        releaseYear: song.releaseYear,
+        soundPreviewURL: song.soundPreviewURL);
   }
 
   void registerLoadListener(void Function(SongCard) callback) {
