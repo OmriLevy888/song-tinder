@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:song_tinder/music_service/music_service_interface.dart';
 import 'package:song_tinder/models/song_model.dart';
@@ -18,10 +19,11 @@ class Spotify extends MusicServiceInterface {
   final client = http.Client();
 
   late String accessToken;
+  // fuck knows this is a bad idea but meh
   static const String _clientId = ""; // Your Spotify app clientId;
   static const _clientSecret = ""; // Your Spotify app clientSecret;
 
-  static const String _callbackServerURL = "http://localhost:3000";
+  static const String _callbackServerURL = "http://localhost:3000/";
   final Uri _initAuthURL = Uri(
       scheme: 'https',
       host: 'accounts.spotify.com',
@@ -68,6 +70,7 @@ class Spotify extends MusicServiceInterface {
     await launchUrl(
         _initAuthURL); // open Spotify's authorization form on a web view
 
+    debugPrint("After launchUrl");
     const int callbackListenerPort = 3000;
 
     // start listener for callback response

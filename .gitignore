@@ -30,3 +30,4 @@ build/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+*\omri-spotify-secrets.txt
